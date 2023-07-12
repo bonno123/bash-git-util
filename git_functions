@@ -22,13 +22,11 @@ function trim_string(){
 
 
 function git_switch_interactive(){
-
     is_a_git_repo=$(git rev-parse --is-inside-work-tree) 
 
     
     if [[ -z $is_a_git_repo ]];
         then
-            # echo IS NOT A GIT REPO
             return
     fi
     
@@ -73,6 +71,11 @@ function git_switch_interactive(){
     select_option "${branchesAsList[@]}"
     local selected_branch_index=$?
     local selected_branch=${branchesAsList[selected_branch_index]}
+
+    if [ "$selected_branch_index" -eq "255" ]; then
+        printf "\n\nAborting ...\n"
+        return;
+    fi
 
     git checkout $selected_branch 
 }
