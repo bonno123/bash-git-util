@@ -5,23 +5,20 @@ source ~/bash-functions/bash_dropdown.sh
 function is_current_branch(){
     if [[ $1 == "*"* ]];
         then
-            true
+            printf true
         else
-            false
+            printf false
     fi
 }
 
-# function trim_string(){
-#     # return "${1#"${1%%[![:space:]]*}"}"
-#     local var="$*"
-#     # remove leading whitespace characters
-#     var="${var#"${var%%[![:space:]]*}"}"
-#     # remove trailing whitespace characters
-#     var="${var%"${var##*[![:space:]]}"}"
-#     printf '%s' "$var"
-#     # return $1 | xargs
-#     $var
-# }
+function trim_string(){
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    printf '%s' "$var"
+}
 
 
 function git_switch_interactive(){
@@ -50,47 +47,32 @@ function git_switch_interactive(){
         do
             branch_count=$((branch_count+1))
 
-            # branchesAsList+=("${branch}")
+            branch=$(trim_string $branch)
 
-            # remove leading whitespace characters
-            branch="${branch#"${branch%%[![:space:]]*}"}"
+            current_branch=$(is_current_branch $branch)
 
-            is_current_branch $branch
-            is_current=$?
-
-            if [[ $is_current == 0 ]];
+            if [[ $current_branch == true ]];
                 then
                    curent_branch=$branch
                 else
                     branchesAsList+=("${branch}")
             fi
-            
-            # echo $is_current
-            # echo $curent_branch
+
 
         done
-
     
-    # echo Currently on branch $curent_branch| sed 's/* //'
     echo $curent_branch
-
-
 
     if [ "$branch_count" -eq "1" ]; then
         echo There is currently no branches available for switch;
         return;
     fi
 
-
     echo Select a branch out of  $((branch_count-1)) branches for switch [hint: use up/down keys and enter to confirm]:
-
 
     select_option "${branchesAsList[@]}"
     local selected_branch_index=$?
     local selected_branch=${branchesAsList[selected_branch_index]}
-
-    # echo $selected_branch_index
-    # echo $selected_branch
 
     git checkout $selected_branch 
 }
