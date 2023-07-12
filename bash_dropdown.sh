@@ -7,21 +7,25 @@
 
 ESC=$( printf "\033")
 
+reset_format=$ESC[0m
+
+bold_italic_blue=$ESC'[1;3;94m'
+bold_normal_blue=$ESC'[1;0;94m'
+
+dim_text_normal_underline_blue=$ESC'[1;2;4;94m'
+
+selection_arrow='\u27A6'
+
 # little helpers for terminal print control and key input
 function cursor_blink_on  { printf "$ESC[?25h"; }
 function cursor_blink_off { printf "$ESC[?25l"; }
 
-# function cursor_to { printf "$ESC[$1;${2:-1}H"; }
 function cursor_to { printf "$ESC[$1;${2:-1}H"; }
 
-
-function print_option { printf "   $ESC[1;3;94m$1  $ESC[0m"; }
-
-# function print_selected { printf "  $ESC[7m $1 $ESC[27m"; }
-# function print_selected { printf "\u27A6 $ESC[7m $1 $ESC[27;2m"; }
-
-# echo -e "\e[1;4;31m Bold+Underline+Red \e[0m"
-function print_selected { printf " $ESC[1;0;94m\u27A6 $ESC[1;2;4;94m$1$ESC[0m "; }
+function print_option { printf "   $bold_italic_blue$1  $reset_format  "; }
+function print_selected { 
+    printf " $bold_normal_blue$selection_arrow $dim_text_normal_underline_blue$1$reset_format "; 
+}
 
 
 
