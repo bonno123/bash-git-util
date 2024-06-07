@@ -1,22 +1,20 @@
 #! /usr/bin/bash
 
+function source_bash_dropdown() {
+    local parent_dir
+    local file_path
 
-parent_dir="$(dirname "$BASH_SOURCE")"
-echo "Parent directory: $parent_dir"
+    parent_dir="$(dirname "$BASH_SOURCE")"
+    file_path="$parent_dir/$1"
 
-file_path="$(dirname "$BASH_SOURCE")/bash_dropdown.sh"
+    if [ -f "$file_path" ]; then
+        source "$file_path"
+    else
+        echo "file $1 not found"
+    fi
+}
 
-if [ -f "$file_path" ]; then
-    source "$file_path"
-else
-    echo "bash_dropdown not found"
-fi
-
-# if [ -f ./bash_dropdown.sh ]; then
-#     source ./bash_dropdown.sh
-# else
-#     echo "bash_dropdown.sh not found"
-# fi
+source_bash_dropdown "bash_dropdown.sh"
 
 function is_current_branch(){
     if [[ $1 == "*"* ]];
