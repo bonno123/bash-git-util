@@ -27,7 +27,7 @@ For now it could be installed directly by cloning this repo
 
 ```sh
 export GIT_UTIL_DIR="$HOME/dev/bash-git-util"
-[ -s "$GIT_UTIL_DIR/util.sh" ] && \. "$GIT_UTIL_DIR/bash-git-util.sh"   This loads git_functions
+[ -s "$GIT_UTIL_DIR/bash-git-util.sh" ] && \. "$GIT_UTIL_DIR/bash-git-util.sh"   This loads git_functions
  ```
  
 _**Important**:  The `GIT_UTIL_DIR` environment variable should point to the directory where `bash-git-util` is located. 
