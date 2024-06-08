@@ -16,6 +16,17 @@ function source_bash_dropdown() {
 
 source_bash_dropdown "bash_dropdown.sh"
 
+update_git_branch_to_prompt() {
+    # local git_branch
+    git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [[ -n "$git_branch" ]]; then
+        PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\](\[\033[0;36m\]*$git_branch\[\033[00m\])$ "
+
+    else
+        PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m$ "
+    fi
+}
+
 function is_current_branch(){
     if [[ $1 == "*"* ]];
         then
@@ -33,6 +44,51 @@ function trim_string(){
     var="${var%"${var##*[![:space:]]}"}"
     printf '%s' "$var"
 }
+
+function git_switch_new(){
+    local branch_name
+
+    # if argument is passed
+    if [[ ! -z $1 ]];
+        then
+            branch_name=$1
+        else # read branch_name from user
+            echo "Enter the name you want to give to the new branch: "
+            read -p "" branch_name
+
+            if [[ -z $branch_name ]];
+                then
+                    echo "Branch name cannot be empty"
+                    return
+            fi
+    fi
+
+    # check if the branch already exists  
+    local branch_exists=$(git branch --list $branch_name)
+
+    if [[ ! -z $branch_exists ]];
+        then
+            echo "Branch with name $branch_name already exists"
+
+            echo "Do you want to switch to the existing branch? [y/n]"
+            read -p "" switch_to_existing_branch
+
+            if [[ $switch_to_existing_branch == "y" ]];
+                then
+                    git checkout $branch_name | tee /dev/fd/2
+                    update_git_branch_to_prompt
+            fi
+
+            return
+    fi
+
+    echo "creating and switching to the new branch ..."
+    git checkout -b $branch_name | tee /dev/fd/2
+    update_git_branch_to_prompt
+
+}
+
+
 
 
 function git_switch_interactive(){
@@ -92,5 +148,6 @@ function git_switch_interactive(){
     fi
 
     git checkout $selected_branch 
+    update_git_branch_to_prompt
 }
 
